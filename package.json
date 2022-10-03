@@ -3,5 +3,21 @@
 	"version": "1.0.0",
 	"repository": "git@bumengi94:bumengi94/template-kit.git",
 	"author": "Buğra Mengi <bumengi94@gmail.com>",
-	"license": "MIT"
+	"license": "MIT",
+	"scripts": {
+		"dev": "gulp"
+	},
+	"devDependencies": {
+		"@types/gulp": "^4.0.9",
+		"@types/gulp-sass": "^5.0.0",
+		"@types/gulp-sourcemaps": "^0.0.35",
+		"fs": "^0.0.1-security",
+		"gulp": "^4.0.2",
+		"gulp-pug": "^5.0.0",
+		"gulp-sass": "^5.1.0",
+		"gulp-sourcemaps": "^3.0.0",
+		"sass": "^1.55.0",
+		"ts-node": "^10.9.1",
+		"typescript": "^4.8.4"
+	}
 }
