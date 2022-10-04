@@ -6,6 +6,8 @@ import gulpSass from "gulp-sass";
 import sourceMaps from "gulp-sourcemaps";
 import browserSync from "browser-sync";
 import autoprefixer from "gulp-autoprefixer";
+import typescriptPlugin from "gulp-typescript";
+import uglifyPlugin from "gulp-uglify";
 
 const bs = browserSync.create();
 
@@ -18,6 +20,9 @@ const paths = {
 	},
 	sass: {
 		path: "./src/sass/**/*.sass",
+	},
+	ts: {
+		path: "./src/ts/**/*.ts",
 	},
 	static: {
 		path: "./src/assets/**",
@@ -34,6 +39,15 @@ const sassTask = () =>
 		.pipe(autoprefixer({ cascade: true }))
 		.pipe(sourceMaps.write("."))
 		.pipe(dest("./dist/assets/css"))
+		.pipe(bs.stream());
+
+const tsTask = () =>
+	src(paths.ts.path)
+		.pipe(sourceMaps.init())
+		.pipe(typescriptPlugin({ noImplicitAny: true }))
+		.pipe(uglifyPlugin({ compress: true, mangle: true }))
+		.pipe(sourceMaps.write("."))
+		.pipe(dest("./dist/js"))
 		.pipe(bs.stream());
 
 const staticTask = () => src(paths.static.path).pipe(dest("./dist/assets")).pipe(bs.stream());
@@ -54,6 +68,9 @@ task("default", () => {
 	sassTask();
 	watch(paths.sass.path, sassTask);
 
+	tsTask();
+	watch(paths.ts.path, tsTask);
+
 	staticTask();
 	watch(paths.static.path, staticTask);
 });
@@ -62,6 +79,7 @@ task("build", (done) => {
 	cleanTask();
 	pugTask();
 	sassTask();
+	tsTask();
 	staticTask();
 	done();
 });
