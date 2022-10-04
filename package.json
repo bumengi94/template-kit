@@ -5,7 +5,8 @@
 	"author": "Buğra Mengi <bumengi94@gmail.com>",
 	"license": "MIT",
 	"scripts": {
-		"dev": "gulp"
+		"dev": "gulp",
+		"prod": "gulp build"
 	},
 	"devDependencies": {
 		"@types/browser-sync": "^2.26.3",

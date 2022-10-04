@@ -1,0 +1,17 @@
+{
+	"name": "Template kit",
+	"short_name": "template-kit",
+	"description": "Template starter kit",
+	"start_url": "/",
+	"theme_color": "#fff",
+	"background_color": "#fff",
+	"orientation": "portrait",
+	"display": "standalone",
+	"icons": [
+		{
+			"src": "/assets/images/gulp.svg",
+			"type": "image/svg+xml",
+			"sizes": "144x144"
+		}
+	]
+}

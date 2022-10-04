@@ -20,7 +20,7 @@ const paths = {
 		path: "./src/sass/**/*.sass",
 	},
 	static: {
-		path: "./src/assets/**/*.*",
+		path: "./src/assets/**",
 	},
 };
 
@@ -36,10 +36,7 @@ const sassTask = () =>
 		.pipe(dest("./dist/assets/css"))
 		.pipe(bs.stream());
 
-const staticTask = () => {
-	src(paths.static.path).pipe(dest("./dist/assets"));
-	bs.reload();
-};
+const staticTask = () => src(paths.static.path).pipe(dest("./dist/assets")).pipe(bs.stream());
 
 const cleanTask = () => {
 	try {
@@ -59,4 +56,12 @@ task("default", () => {
 
 	staticTask();
 	watch(paths.static.path, staticTask);
+});
+
+task("build", (done) => {
+	cleanTask();
+	pugTask();
+	sassTask();
+	staticTask();
+	done();
 });
