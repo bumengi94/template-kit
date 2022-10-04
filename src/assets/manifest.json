@@ -9,9 +9,16 @@
 	"display": "standalone",
 	"icons": [
 		{
-			"src": "/assets/images/gulp.svg",
+			"src": "/assets/images/gulp@144.svg",
 			"type": "image/svg+xml",
-			"sizes": "144x144"
+			"sizes": "144x144",
+			"purpose": "maskable"
+		},
+		{
+			"src": "/assets/images/gulp@512.svg",
+			"type": "image/png",
+			"sizes": "512x512",
+			"purpose": "any"
 		}
 	]
 }

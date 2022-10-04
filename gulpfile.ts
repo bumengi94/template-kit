@@ -6,13 +6,12 @@ import gulpSass from "gulp-sass";
 import sourceMaps from "gulp-sourcemaps";
 import browserSync from "browser-sync";
 import autoprefixer from "gulp-autoprefixer";
-import typescriptPlugin from "gulp-typescript";
+import gulpTypescript from "gulp-typescript";
 import uglifyPlugin from "gulp-uglify";
 
 const bs = browserSync.create();
-
 const sassPlugin = gulpSass(sass);
-
+const typescriptPlugin = gulpTypescript.createProject("./src/ts/tsconfig.json");
 const paths = {
 	pug: {
 		path: "./src/**/*.pug",
@@ -44,7 +43,7 @@ const sassTask = () =>
 const tsTask = () =>
 	src(paths.ts.path)
 		.pipe(sourceMaps.init())
-		.pipe(typescriptPlugin({ noImplicitAny: true }))
+		.pipe(typescriptPlugin())
 		.pipe(uglifyPlugin({ compress: true, mangle: true }))
 		.pipe(sourceMaps.write("."))
 		.pipe(dest("./dist/js"))
@@ -59,7 +58,18 @@ const cleanTask = () => {
 };
 
 task("default", () => {
-	bs.init({ server: { baseDir: "./dist" } });
+	bs.init({
+		server: {
+			baseDir: "./dist",
+			serveStaticOptions: {
+				setHeaders: (res, path) => {
+					if (path.endsWith("sw.js")) {
+						res.setHeader("Service-Worker-Allowed", "/");
+					}
+				},
+			},
+		},
+	});
 	cleanTask();
 
 	pugTask();
