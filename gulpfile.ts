@@ -11,7 +11,8 @@ import uglifyPlugin from "gulp-uglify";
 
 const bs = browserSync.create();
 const sassPlugin = gulpSass(sass);
-const typescriptPlugin = gulpTypescript.createProject("./src/ts/tsconfig.json");
+const typescriptPlugin = gulpTypescript.createProject("./src/tsconfig.json");
+const typescriptPlugin2 = gulpTypescript.createProject("./src/tsconfig.json");
 const paths = {
 	pug: {
 		path: "./src/**/*.pug",
@@ -22,6 +23,9 @@ const paths = {
 	},
 	ts: {
 		path: "./src/ts/**/*.ts",
+	},
+	worker: {
+		path: "./src/workers/**/*.ts",
 	},
 	static: {
 		path: "./src/assets/**",
@@ -38,6 +42,15 @@ const sassTask = () =>
 		.pipe(autoprefixer({ cascade: true }))
 		.pipe(sourceMaps.write("."))
 		.pipe(dest("./dist/assets/css"))
+		.pipe(bs.stream());
+
+const workerTask = () =>
+	src(paths.worker.path)
+		.pipe(sourceMaps.init())
+		.pipe(typescriptPlugin2())
+		.pipe(uglifyPlugin({ compress: true, mangle: true }))
+		.pipe(sourceMaps.write("."))
+		.pipe(dest("./dist"))
 		.pipe(bs.stream());
 
 const tsTask = () =>
@@ -59,15 +72,9 @@ const cleanTask = () => {
 
 task("default", () => {
 	bs.init({
+		open: false,
 		server: {
 			baseDir: "./dist",
-			serveStaticOptions: {
-				setHeaders: (res, path) => {
-					if (path.endsWith("sw.js")) {
-						res.setHeader("Service-Worker-Allowed", "/");
-					}
-				},
-			},
 		},
 	});
 	cleanTask();
@@ -77,6 +84,9 @@ task("default", () => {
 
 	sassTask();
 	watch(paths.sass.path, sassTask);
+
+	workerTask();
+	watch(paths.worker.path, workerTask);
 
 	tsTask();
 	watch(paths.ts.path, tsTask);
@@ -89,6 +99,7 @@ task("build", (done) => {
 	cleanTask();
 	pugTask();
 	sassTask();
+	workerTask();
 	tsTask();
 	staticTask();
 	done();

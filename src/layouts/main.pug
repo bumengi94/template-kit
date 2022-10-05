@@ -8,14 +8,14 @@ html(lang="en", dir="ltr")
 		)
 		meta(name="description", content="Template kit")
 		meta(name="theme-color", content="#fff")
+		meta(name="apple-mobile-web-app-status-bar", content="#f0f")
 
 		title Gulp Kit
-
 		link(rel="manifest", type="application/json", href="/assets/manifest.json")
 		link(rel="stylesheet", type="text/css", href="/assets/css/main.css")
-		link(rel="icon", type="image/xml+svg", href="/assets/images/gulp.svg")
-		link(rel="apple-touch-icon", type="image/xml+svg", href="/assets/images/gulp.svg")
+		link(rel="icon", type="image/svg+xml", href="/assets/images/gulp.svg")
+		link(rel="apple-touch-icon", type="image/svg+xml", href="/assets/images/gulp.svg")
 
-		script(type="application/javascript", src="/js/workers/workerRegistry.js", defer)
+		script(type="application/javascript", src="/workerRegistry.js", defer)
 	body
 		block content
