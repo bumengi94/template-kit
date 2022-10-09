@@ -12,7 +12,7 @@ import uglifyPlugin from "gulp-uglify";
 const bs = browserSync.create();
 const sassPlugin = gulpSass(sass);
 const typescriptPlugin = gulpTypescript.createProject("./src/tsconfig.json");
-const typescriptPlugin2 = gulpTypescript.createProject("./src/tsconfig.json");
+
 const paths = {
 	pug: {
 		path: "./src/**/*.pug",
@@ -22,13 +22,13 @@ const paths = {
 		path: "./src/sass/**/*.sass",
 	},
 	ts: {
-		path: "./src/ts/**/*.ts",
+		path: "./src/**/*.ts",
 	},
-	worker: {
-		path: "./src/workers/**/*.ts",
-	},
-	static: {
+	assets: {
 		path: "./src/assets/**",
+	},
+	public: {
+		path: "./src/public/**",
 	},
 };
 
@@ -44,25 +44,18 @@ const sassTask = () =>
 		.pipe(dest("./dist/assets/css"))
 		.pipe(bs.stream());
 
-const workerTask = () =>
-	src(paths.worker.path)
-		.pipe(sourceMaps.init())
-		.pipe(typescriptPlugin2())
-		.pipe(uglifyPlugin({ compress: true, mangle: true }))
-		.pipe(sourceMaps.write("."))
-		.pipe(dest("./dist"))
-		.pipe(bs.stream());
-
 const tsTask = () =>
 	src(paths.ts.path)
 		.pipe(sourceMaps.init())
 		.pipe(typescriptPlugin())
 		.pipe(uglifyPlugin({ compress: true, mangle: true }))
 		.pipe(sourceMaps.write("."))
-		.pipe(dest("./dist/js"))
+		.pipe(dest("./dist"))
 		.pipe(bs.stream());
 
-const staticTask = () => src(paths.static.path).pipe(dest("./dist/assets")).pipe(bs.stream());
+const assetsTask = () => src(paths.assets.path).pipe(dest("./dist/assets")).pipe(bs.stream());
+
+const publicTask = () => src(paths.public.path).pipe(dest("./dist")).pipe(bs.stream());
 
 const cleanTask = () => {
 	try {
@@ -85,22 +78,22 @@ task("default", () => {
 	sassTask();
 	watch(paths.sass.path, sassTask);
 
-	workerTask();
-	watch(paths.worker.path, workerTask);
-
 	tsTask();
 	watch(paths.ts.path, tsTask);
 
-	staticTask();
-	watch(paths.static.path, staticTask);
+	assetsTask();
+	watch(paths.assets.path, assetsTask);
+
+	publicTask();
+	watch(paths.public.path, publicTask);
 });
 
 task("build", (done) => {
 	cleanTask();
 	pugTask();
 	sassTask();
-	workerTask();
 	tsTask();
-	staticTask();
+	assetsTask();
+	publicTask();
 	done();
 });
